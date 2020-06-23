@@ -1,0 +1,55 @@
+#include "treeitem.h"
+
+TreeItem::TreeItem(QString newId)
+    : m_id(newId)
+{
+}
+
+TreeItem::~TreeItem()
+{
+    while (m_children.count()) {
+        delete m_children.takeFirst();
+    }
+}
+
+QString TreeItem::id() const
+{
+    return m_id;
+}
+
+TreeItem* TreeItem::parent() const
+{
+    return m_parent;
+}
+
+void TreeItem::setParent(TreeItem *newParent)
+{
+    m_parent = newParent;
+}
+
+int TreeItem::rowInParent() const
+{
+    return m_row;
+}
+
+void TreeItem::setRow(int row)
+{
+    m_row = row;
+}
+
+void TreeItem::addChild(TreeItem *newChild)
+{
+    newChild->setParent(this);
+    newChild->setRow(m_children.count());
+    m_children.append(newChild);
+}
+
+int TreeItem::numOfChildren() const
+{
+    return m_children.count();
+}
+
+TreeItem* TreeItem::childAt(int index) const
+{
+    return m_children.at(index);
+}
