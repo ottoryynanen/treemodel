@@ -5,6 +5,10 @@
 TreeModel::TreeModel(QObject* parent)
     : QAbstractItemModel(parent)
 {
+    /* Creating a tree for demonstration purposes. For more complex data
+     * this is the point to request data storage for the hierarchy of items
+     * and create the matching TreeItems.
+     */
     m_root = new TreeItem("Invisible");
     TreeItem* level1item1 = new TreeItem("First item at first level");
     TreeItem* level1item2 = new TreeItem("Second item at first level");
@@ -38,6 +42,7 @@ QModelIndex TreeModel::index(int row, int column,
     if (row >= 0 && column >= 0 && column < 1) {
         TreeItem* parentItem = getTreeItem(parent);
         if (parentItem->numOfChildren() > row) {
+            /* Set the internalPointer of the index to point to matching TreeItem */
             return createIndex(row, column, parentItem->childAt(row));
         }
     }
@@ -51,7 +56,7 @@ QModelIndex TreeModel::parent(const QModelIndex &child) const
     if (item->parent()) {
         return indexOf(item->parent());
     } else {
-        qWarning() << "Asking for a parent of root item!";
+        qWarning() << "Asking for a parent of root item, this should never happen!";
         return QModelIndex();
     }
 }
@@ -76,6 +81,9 @@ bool TreeModel::hasChildren(const QModelIndex &parent) const
 
 QVariant TreeModel::data(const QModelIndex &index, int role) const
 {
+    /* For more complex data (more roles), this is the place to use the ID and
+     * make a request to the data storage for details of the ID in question.
+     */
     if (role == Qt::DisplayRole) {
         return getTreeItem(index)->id();
     } else {
@@ -85,13 +93,14 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
 
 TreeItem* TreeModel::getTreeItem(const QModelIndex &indexToUse) const
 {
-    TreeItem* itemOfIndex;
+    TreeItem* itemFromIndex;
     if (indexToUse == QModelIndex()) {
-        itemOfIndex = m_root;
+        itemFromIndex = m_root;
     } else {
-        itemOfIndex = static_cast<TreeItem*>(indexToUse.internalPointer());
+        itemFromIndex = static_cast<TreeItem*>(indexToUse.internalPointer());
     }
-    return itemOfIndex;
+    Q_ASSERT(itemFromIndex);
+    return itemFromIndex;
 }
 
 QModelIndex TreeModel::indexOf(TreeItem *item) const

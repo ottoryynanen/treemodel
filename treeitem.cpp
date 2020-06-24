@@ -8,6 +8,7 @@ TreeItem::TreeItem(QString newId)
 TreeItem::~TreeItem()
 {
     while (m_children.count()) {
+        /* This will cause children to delete their children and so on. */
         delete m_children.takeFirst();
     }
 }
@@ -39,6 +40,7 @@ void TreeItem::setRow(int row)
 
 void TreeItem::addChild(TreeItem *newChild)
 {
+    /* Update the child with the knowledge of its position in the hierarchy. */
     newChild->setParent(this);
     newChild->setRow(m_children.count());
     m_children.append(newChild);

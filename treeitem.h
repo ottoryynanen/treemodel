@@ -19,6 +19,11 @@ private:
     QVector<TreeItem*> m_children;
     TreeItem* m_parent = nullptr;
     QString m_id;
+    /* m_row is the "row of this item under the parent index"
+     * i.e. "index of this item in the m_children of the parent".
+     * It's stored purely for performance, it could equally be fetched via
+     * m_parent->m_children.indexOf(this);
+     */
     int m_row;
 };
 
